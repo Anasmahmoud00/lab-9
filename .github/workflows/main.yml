@@ -1,4 +1,4 @@
-name: Build and Deploy React App to Azure
+name: Build and Deploy Flask App to Azure
 
 on:
   push:
@@ -8,21 +8,37 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          node-version: '16'
+          python-version: '3.9'  # Change to the Python version you are using
 
       - name: Install dependencies
         run: |
-          npm install
-          
-      - name: Build the app
-        run: npm run build
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt  # Assuming you have a requirements.txt file
 
-  
+      - name: Run tests (optional)
+        run: |
+          pytest  # Assuming you're using pytest for tests
+
+      - name: Build the app
+        run: |
+          # Any build steps specific to Flask can be added here
+          echo "Flask app built"  # Flask apps are typically not built like React apps
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to Azure
+        uses: Azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.AZURE_APP_NAME }}  # Azure App Service Name
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}  # Azure Publish Profile XML
+          package: .  # Deploy the current directory (including your Flask app)
