@@ -3,7 +3,7 @@ name: Build and Deploy Flask App to Azure
 on:
   push:
     branches:
-      - main  # Trigger the workflow on pushes to the 'main' branch
+      - main  # Trigger on push to the 'main' branch
 
 jobs:
   build:
@@ -16,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'  # Use the version of Python required for your Flask app
+          python-version: '3.9'  # Specify your Python version here
 
       - name: Install dependencies
         run: |
@@ -33,7 +33,8 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build  # Only run the deploy step if the build step was successful
+    needs: build  # Only run deploy after the build step succeeds
+
     steps:
       - name: Deploy to Azure
         uses: Azure/webapps-deploy@v2
