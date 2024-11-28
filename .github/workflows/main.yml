@@ -3,7 +3,7 @@ name: Build and Deploy Flask App to Azure
 on:
   push:
     branches:
-      - main  # Trigger the workflow on pushes to the 'main' branch
+      - main  # Trigger on push to the 'main' branch
 
 jobs:
   build:
@@ -16,29 +16,28 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'  # Use the version of Python required for your Flask app
+          python-version: '3.9'  # Specify your Python version here
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt  # Assuming you have a requirements.txt with Flask dependencies
+          pip install -r requirements.txt  # Install dependencies from requirements.txt
 
       - name: Run tests (optional)
         run: |
-          pytest  # Assuming you're using pytest for unit tests
+          pytest  # Run tests if you have them set up
 
-      - name: Build the app (if applicable)
+      - name: Build the app (optional for Flask apps)
         run: |
-          # Flask apps generally do not need a build step like React apps
           echo "Flask app setup complete"
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build  # Only run the deploy step if the build step was successful
+    needs: build  # Only run deploy after the build step succeeds
     steps:
       - name: Deploy to Azure
         uses: Azure/webapps-deploy@v2
         with:
-          app-name: ${{ secrets.AZURE_APP_NAME }}  # Azure App Service Name
+          app-name: deploy-flask-app  # Azure App Service Name (your app name)
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}  # Azure Publish Profile XML
-          package: .  # Deploy the entire repository (current directory) to Azure
+          package: .  # Deploy the entire current directory (or specify a subfolder if needed)
