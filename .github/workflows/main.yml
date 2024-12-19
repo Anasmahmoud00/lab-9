@@ -22,8 +22,10 @@ jobs:
 
       # Step 3: Install dependencies, build, and test
       - name: npm install, build, and test
+        env:
+          CI: true # Ensures builds/tests run in CI mode
         run: |
-          npm install
+          npm install --verbose
           npm run build --if-present
           npm run test --if-present
 
